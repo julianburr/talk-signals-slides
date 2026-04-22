@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Major+Mono+Display&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geologica:wght,CRSV@100..900,0&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@100..700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nothing+You+Could+Do&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Give+You+Glory&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mynerve&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Waiting+for+the+Sunrise&display=swap');
+
+@import 'tailwindcss';
+
+:root {
+  --background: #f9f9f8;
+  --background-highlight: #f3f0ec;
+  --background-highlight-hover: #e7e3df;
+  --background-cover: #f1e8d2;
+  --background-code: #1e1e1e;
+  --foreground: #171717;
+  --foreground-highlight: #171717;
+  --foreground-cover: #171717;
+  --foreground-code: #f9f9f8;
+}
+
+.theme-dark {
+  --background: #2d302a;
+  --background-highlight: #1e1e1e;
+  --background-highlight-hover: #111;
+  --background-cover: #2d302a;
+  --background-code: #1e1e1e;
+  --foreground: #f9f9f8;
+  --foreground-highlight: #f9f9f8;
+  --foreground-cover: #f9f9f8;
+  --foreground-code: #f9f9f8;
+}
+
+@theme inline {
+  --font-heading: 'Geologica', cursive;
+  --font-heading-art: 'Major Mono Display', monospace;
+  --font-handwriting: 'Cedarville Cursive', cursive;
+  --font-mono: 'Source Code Pro', monospace;
+  --font-body: 'Lato', sans-serif;
+
+  --color-background: var(--background);
+  --color-background-highlight: var(--background-highlight);
+  --color-background-highlight-hover: var(--background-highlight-hover);
+  --color-background-cover: var(--background-cover);
+  --color-background-code: var(--background-code);
+  --color-foreground: var(--foreground);
+  --color-foreground-highlight: var(--foreground-highlight);
+  --color-foreground-cover: var(--foreground-cover);
+  --color-foreground-code: var(--foreground-code);
+
+  --color-traffic-red: #ff5757;
+  --color-traffic-yellow: #ffde59;
+  --color-traffic-green: #7ed957;
+
+  --color-background-sea: #dceeff;
+  --color-foreground-sea: #0c414b;
+}
+
+*,
+*:before,
+*:after {
+  @apply box-border;
+}
+
+html,
+body {
+  @apply h-full w-full;
+}
+
+body {
+  /**
+   * Basics
+   */
+  @apply text-[3.6vh] leading-[1.3] text-foreground bg-background font-body font-light overflow-hidden;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply m-0 p-0;
+  }
+
+  b {
+    @apply font-bold;
+  }
+
+  /**
+   * Hide cursor
+   */
+  &.hide-cursor {
+    @apply cursor-none;
+
+    .hide-cursor-overlay {
+      @apply block cursor-none;
+    }
+  }
+
+  .hide-cursor-overlay {
+    @apply fixed inset-0 opacity-0 z-100 hidden;
+  }
+
+  /**
+   * Editor
+   */
+  .cm-line.cm-line {
+    @apply leading-[1.8] px-[1.2rem];
+  }
+
+  .cm-gutterElement.cm-gutterElement {
+    @apply px-[1vh] w-[2.4rem] leading-[1.8] text-foreground-code/10;
+
+    &.cm-activeLineGutter {
+      @apply text-foreground-code/40;
+    }
+  }
+
+  .code-live-preview {
+    @apply flex flex-col items-center justify-center w-full h-full gap-[.8vh] font-mono text-[3.2vh];
+
+    & button {
+      @apply bg-background-highlight text-foreground-highlight border-none outline-none cursor-pointer px-[2.4vh] py-[1.4vh] rounded-[.8vh] hover:bg-background-highlight-hover focus:bg-background-highlight-hover transition-all duration-120 active:scale-95;
+
+      &:last-of-type {
+        @apply mb-[3vh];
+      }
+    }
+  }
+
+  /**
+   * Illustrations
+   */
+  .jellyfish-react {
+    @apply [&_.jellyfish-main]:fill-[#51a0dd] [&_.jellyfish-light]:fill-[#6bb7e8] [&_.jellyfish-dark]:fill-[#4e9ada] [&_.jellyfish-darker]:fill-[#4082bb];
+  }
+
+  .crab-solid {
+    @apply [&_.crab-main]:fill-[#6198d6] [&_.crab-light]:fill-[#9cc5f4] [&_.crab-dark]:fill-[#3d5780] [&_.crab-darker]:fill-[#2b4062];
+  }
+
+  .crab-vue {
+    @apply [&_.crab-main]:fill-[#49c890] [&_.crab-light]:fill-[#78dfb2] [&_.crab-dark]:fill-[#345e57] [&_.crab-darker]:fill-[#23443e];
+  }
+
+  .crab-angular {
+    @apply [&_.crab-main]:fill-[#e44545] [&_.crab-light]:fill-[#ef9999] [&_.crab-dark]:fill-[#ab3030] [&_.crab-darker]:fill-[#832222];
+  }
+}
