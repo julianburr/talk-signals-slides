@@ -3,15 +3,22 @@ import { javascript } from '@codemirror/lang-javascript';
 import { php } from '@codemirror/lang-php';
 import { vscodeDark } from '@uiw/codemirror-theme-vscode';
 import CodeMirror from '@uiw/react-codemirror';
+import * as pluginBabel from 'prettier/plugins/babel';
+import * as pluginEstree from 'prettier/plugins/estree';
+import * as pluginHtml from 'prettier/plugins/html';
+import * as prettier from 'prettier/standalone';
 import {
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type Dispatch,
+  type KeyboardEvent,
   type SetStateAction,
 } from 'react';
 import { match } from 'ts-pattern';
+
+import type { EditorView } from '@uiw/react-codemirror';
 
 import { vh } from '~/utils/sizes';
 
@@ -32,6 +39,7 @@ export function CodeEditorAlt({
   fontSize = vh(2.25),
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const viewRef = useRef<null | EditorView>(null);
   const [height, setHeight] = useState('100%');
 
   useLayoutEffect(() => {
@@ -50,6 +58,38 @@ export function CodeEditorAlt({
         .otherwise(() => []),
     [language],
   );
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    match([e.key, e.metaKey])
+      .with(['s', true], async () => {
+        // Cmd+S = format code with prettier
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          const formatted = await prettier.format(code, {
+            parser: language === 'html' ? 'html' : 'babel',
+            plugins:
+              language === 'html'
+                ? [pluginBabel, pluginEstree, pluginHtml]
+                : [pluginBabel, pluginEstree],
+            pluginEstree,
+          });
+
+          if (viewRef.current) {
+            const currentSelection = viewRef.current.state.selection;
+            const currentScrollTop = viewRef.current.scrollDOM.scrollTop;
+            viewRef.current.dispatch({
+              changes: { from: 0, to: viewRef.current.state.doc.length, insert: formatted },
+              selection: currentSelection,
+            });
+            viewRef.current.scrollDOM.scrollTo({ top: currentScrollTop });
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      })
+      .otherwise(() => null);
+  };
 
   return (
     <div className="code-editor relative flex flex-col w-full h-full bg-background-code rounded-[.8vh] data-[readonly=true]:pointer-events-none overflow-hidden">
@@ -70,10 +110,15 @@ export function CodeEditorAlt({
           theme={vscodeDark}
           height={height}
           readOnly={readOnly}
+          onCreateEditor={(view) => {
+            viewRef.current = view;
+          }}
+          onKeyDown={handleKeyDown}
           basicSetup={{
             highlightActiveLine: !readOnly,
             lineNumbers,
             foldGutter: false,
+            autocompletion: true,
           }}
         />
       </div>

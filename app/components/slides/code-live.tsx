@@ -1,118 +1,236 @@
-import * as pluginBabel from 'prettier/plugins/babel';
-import * as pluginEstree from 'prettier/plugins/estree';
-import * as pluginHtml from 'prettier/plugins/html';
-import * as prettier from 'prettier/standalone';
+/* eslint-disable max-lines */
 import { useEffect, useRef, useState } from 'react';
+import { match, P } from 'ts-pattern';
 
 import IconHtmlSvg from '~/assets/illustrations/icon-html.svg?react';
 import IconJsSvg from '~/assets/illustrations/icon-js.svg?react';
 import { CodeEditorAlt } from '~/components/code-editor-alt';
 import { formatCode } from '~/utils/code';
 
-const initialIndexCode = `
-  <button id="one">Counter 1: <span id="valueone">0</span></button>
-  <button id="two">Counter 2: <span id="valuetwo">0</span></button>
-  <button id="both">Increase both</button>
+const codeSnapshots = [
+  // Cmd+0 = Start
+  [
+    formatCode(`
+      <button id="buttonone">Counter: <span id="valueone">0</span></button>
 
-  <p>Sum: <span id="sum">0</span></p>
-  <p>Parity: <span id="parity">even</span></p>
+      <p>Parity: <span id="parity">even</span></p>
 
-  <script type="module">
-    import { signal, computed, effect } from "./signal.js";
+      <script type="module">
+      </script>
+    `),
+    '',
+  ],
 
-    const count1 = signal(0);
-    const count2 = signal(0);
-    const sum = computed(() => count1.get() + count2.get());
-    const parity = computed(() => (sum.get() % 2 === 0 ? "even" : "odd"));
+  // Cmd+1
+  [
+    formatCode(`
+      <button id="buttonone">Counter: <span id="valueone">0</span></button>
 
-    window.one.onclick = () => count1.set(count1.get() + 1);
-    window.two.onclick = () => count2.set(count2.get() + 1);
-    window.both.onclick = () => {
-      count1.set(count1.get() + 1);
-      count2.set(count2.get() + 1);
-    };
+      <p>Parity: <span id="parity">even</span></p>
 
-    effect(() => (window.valueone.textContent = count1.get()));
-    effect(() => (window.valuetwo.textContent = count2.get()));
-    effect(() => (window.sum.textContent = sum.get()));
-    effect(() => (window.parity.textContent = parity.get()));
+      <script type="module">
+        window.buttonone.onclick = () => {
+          const value1 = parseInt(window.valueone.textContent);
+          const newValue1 = value1 + 1;
+          const newParity = newValue1 % 2 === 0 ? "even" : "odd";
 
-    effect(() => console.log({ parity: parity.get() }));
-  </script>
+          window.valueone.textContent = newValue1;
+          window.parity.textContent = newParity;
+        };
+      </script>
+    `),
+    '',
+  ],
 
-`;
+  // Cmd+2
+  [
+    formatCode(`
+      <button id="buttonone">Counter: <span id="valueone">0</span></button>
+      <button id="buttontwo">Counter: <span id="valuetwo">0</span></button>
 
-const initialSignalCode = `
-  let currentEffect = null;
+      <p>Sum: <span id="sum">0</span></p>
+      <p>Parity: <span id="parity">even</span></p>
 
-  function signal(initialValue) {
-    let value = initialValue;
-    let subscribers = [];
-    return {
-      get: () => {
-        if (currentEffect) {
-          subscribers.push(currentEffect);
-        }
-        return value;
-      },
-      set: (newValue) => {
-        value = newValue;
-        subscribers.forEach((subscriber) => subscriber());
-      },
-    };
-  }
+      <script type="module">
+        window.buttonone.onclick = () => {
+          const value1 = parseInt(window.valueone.textContent);
+          const value2 = parseInt(window.valueone.textContent);
+          const newValue1 = value1 + 1;
+          const newSum = newValue1 + value2;
+          const newParity = newSum % 2 === 0 ? "even" : "odd";
 
-  function computed(fn) {
-    return {
-      get: () => fn(),
-    };
-  }
+          window.valueone.textContent = newValue1;
+          window.sum.textContent = newSum;
+          window.parity.textContent = newParity;
+        };
+      </script>
+    `),
+    '',
+  ],
 
-  function effect(fn) {
-    currentEffect = fn;
-    fn();
-    currentEffect = null;
-  }
+  // Cmd+3
+  [
+    formatCode(`
+      <button id="buttonone">Counter: <span id="valueone">0</span></button>
+      <button id="buttontwo">Counter: <span id="valuetwo">0</span></button>
+      <button id="buttonboth">Increase both</button>
 
-  export { signal, computed, effect };
-`;
+      <p>Sum: <span id="sum">0</span></p>
+      <p>Parity: <span id="parity">even</span></p>
+
+      <script type="module">
+        window.buttonone.onclick = () => {
+          const value1 = parseInt(window.valueone.textContent);
+          const value2 = parseInt(window.valuetwo.textContent);
+          const newValue1 = value1 + 1;
+          const newSum = newValue1 + value2;
+          const newParity = newSum % 2 === 0 ? "even" : "odd";
+
+          window.valueone.textContent = newValue1;
+          window.sum.textContent = newSum;
+          window.parity.textContent = newParity;
+        };
+
+        window.buttontwo.onclick = () => {
+          const value1 = parseInt(window.valueone.textContent);
+          const value2 = parseInt(window.valuetwo.textContent);
+          const newValue2 = value2 + 1;
+          const newSum = value1 + newValue2;
+          const newParity = newSum % 2 === 0 ? "even" : "odd";
+
+          window.valuetwo.textContent = newValue2;
+          window.sum.textContent = newSum;
+          window.parity.textContent = newParity;
+        };
+
+        window.buttonboth.onclick = () => {
+          const value1 = parseInt(window.valueone.textContent);
+          const value2 = parseInt(window.valuetwo.textContent);
+          const newValue1 = value1 + 1;
+          const newValue2 = value2 + 1;
+          const newSum = newValue1 + newValue2;
+          const newParity = newSum % 2 === 0 ? "even" : "odd";
+
+          window.valueone.textContent = newValue1;
+          window.valuetwo.textContent = newValue2;
+          window.sum.textContent = newSum;
+          window.parity.textContent = newParity;
+        };
+      </script>
+    `),
+    '',
+  ],
+
+  // Cmd+4
+  [
+    formatCode(`
+      <button id="buttonone">Counter: <span id="valueone">0</span></button>
+      <button id="buttontwo">Counter: <span id="valuetwo">0</span></button>
+      <button id="buttonboth">Increase both</button>
+
+      <p>Sum: <span id="sum">0</span></p>
+      <p>Parity: <span id="parity">even</span></p>
+
+      <script type="module">
+        import { signal, computed, effect } from './signal.js';
+
+        const value1 = signal(0);
+        const value2 = signal(0);
+        const sum = computed(() => value1.get() + value2.get());
+        const parity = computed(() => sum.get() % 2 === 0 ? "even" : "odd");
+
+        effect(() => (window.valueone.textContent = value1.get()));
+        effect(() => (window.valuetwo.textContent = value2.get()));
+        effect(() => (window.sum.textContent = sum.get()));
+        effect(() => (window.parity.textContent = parity.get()));
+
+        window.buttonone.onclick = () => value1.set(value1.get() + 1);
+        window.buttontwo.onclick = () => value2.set(value2.get() + 1);
+        window.buttonboth.onclick = () => {
+          value1.set(value1.get() + 1);
+          value2.set(value2.get() + 1);
+        };
+      </script>
+    `),
+    '',
+  ],
+
+  // Cmd+5
+  [
+    formatCode(`
+      <button id="buttonone">Counter: <span id="valueone">0</span></button>
+      <button id="buttontwo">Counter: <span id="valuetwo">0</span></button>
+      <button id="buttonboth">Increase both</button>
+
+      <p>Sum: <span id="sum">0</span></p>
+      <p>Parity: <span id="parity">even</span></p>
+
+      <script type="module">
+        import { signal, computed, effect } from './signal.js';
+
+        const value1 = signal(0);
+        const value2 = signal(0);
+        const sum = computed(() => value1.get() + value2.get());
+        const parity = computed(() => sum.get() % 2 === 0 ? "even" : "odd");
+
+        effect(() => (window.valueone.textContent = value1.get()));
+        effect(() => (window.valuetwo.textContent = value2.get()));
+        effect(() => (window.sum.textContent = sum.get()));
+        effect(() => (window.parity.textContent = parity.get()));
+
+        window.buttonone.onclick = () => value1.set(value1.get() + 1);
+        window.buttontwo.onclick = () => value2.set(value2.get() + 1);
+        window.buttonboth.onclick = () => {
+          value1.set(value1.get() + 1);
+          value2.set(value2.get() + 1);
+        };
+      </script>
+    `),
+    formatCode(`
+      let currentEffect = null;
+
+      export function signal(initialValue) {
+        let value = initialValue;
+        let subscribers = [];
+        return {
+          get: () => {
+            if (currentEffect) {
+              subscribers.push(currentEffect);
+            }
+            return value;
+          },
+          set: (newValue) => {
+            value = newValue;
+            subscribers.forEach((fn) => fn());
+          },
+        };
+      }
+
+      export function computed(fn) {
+        return {
+          get: () => {
+            return fn();
+          },
+        };
+      }
+
+      export function effect(fn) {
+        currentEffect = fn;
+        fn();
+        currentEffect = null;
+      }
+    `),
+  ],
+];
 
 export function CodeLiveSlide() {
   const [file, setFile] = useState('index.html');
 
-  const [indexCode, setIndexCode] = useState(formatCode(initialIndexCode));
-  const [signalCode, setSignalCode] = useState(formatCode(initialSignalCode));
+  const [indexCode, setIndexCode] = useState(codeSnapshots[0][0]);
+  const [signalCode, setSignalCode] = useState(codeSnapshots[0][1]);
 
   const code = file === 'index.html' ? indexCode : signalCode;
   const setCode = file === 'index.html' ? setIndexCode : setSignalCode;
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      console.log({ e, key: e.key, metaKey: e.metaKey });
-      if (e.key === 's' && e.metaKey) {
-        console.log({ indexCode, signalCode });
-        Promise.all([
-          prettier.format(indexCode, {
-            parser: 'html',
-            plugins: [pluginBabel, pluginEstree, pluginHtml],
-          }),
-          prettier.format(signalCode, {
-            parser: 'babel',
-            plugins: [pluginBabel, pluginEstree],
-          }),
-        ])
-          .then(([formattedIndexCode, formattedSignalCode]) => {
-            console.log({ formattedIndexCode, formattedSignalCode });
-            setIndexCode(formattedIndexCode);
-            setSignalCode(formattedSignalCode);
-          })
-          .catch(console.error);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown, true);
-    return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, []);
 
   const [previewCode, setPreviewCode] = useState('');
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -149,6 +267,27 @@ export function CodeLiveSlide() {
     }
   }, [previewCode]);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      match([e.key, e.metaKey, e.ctrlKey])
+        .with(['r', true, false], () => {
+          e.preventDefault();
+          e.stopPropagation();
+        })
+        .with([P.union('0', '1', '2', '3', '4', '5'), false, true], () => {
+          e.preventDefault();
+          e.stopPropagation();
+          const index = parseInt(e.key);
+          setIndexCode(codeSnapshots[index][0]);
+          setSignalCode(codeSnapshots[index][1]);
+        })
+        .otherwise(() => null);
+    };
+
+    window.document.addEventListener('keydown', handleKeyDown);
+    return () => window.document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="flex flex-row w-full h-full">
       <div className="p-[2vh] flex w-[60vw] h-full relative">
@@ -177,6 +316,7 @@ export function CodeLiveSlide() {
           </button>
         </div>
         <CodeEditorAlt
+          key={file}
           code={code}
           setCode={setCode}
           language={file === 'index.html' ? 'html' : 'javascript'}
