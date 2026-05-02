@@ -15,10 +15,12 @@ export function QrCodeSlide() {
   const params = useParams();
   const conference = match(params.conference)
     .with('ndcsydney', () => 'NDC Sydney 2026')
+    .with('devworld', () => 'DevWorld 2026')
     .otherwise(() => null);
 
   const slidesUrl = match(params.conference)
     .with('ndcsydney', () => 'https://www.julianburr.de/ndc-sydney-2026-slides.pdf')
+    .with('devworld', () => 'https://www.julianburr.de/devworld-2026-slides.pdf')
     .otherwise(() => '');
 
   const [qrCode, setQrCode] = useState<string | null>(null);

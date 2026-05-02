@@ -12,6 +12,7 @@ export function CoverSlide({ expanded }: Props) {
   const params = useParams();
   const conference = match(params.conference)
     .with('ndcsydney', () => 'NDC Sydney 2026')
+    .with('devworld', () => 'DevWorld 2026')
     .otherwise(() => null);
 
   return (
