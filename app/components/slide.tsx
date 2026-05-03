@@ -19,7 +19,7 @@ export function Slide({ children, source, sourceText, className }: Props) {
         <div className="flex w-full align-end justify-end p-[3vh]">
           {source ? (
             <a
-              className="text-[1.5vh] font-foreground opacity-[.4] uppercase hover:underline hover:opacity-[.6] focus:underline focus:opacity-[.6] transition-all duration-120"
+              className="text-[1.8vh] font-foreground opacity-[.4] uppercase hover:underline hover:opacity-[.6] focus:underline focus:opacity-[.6] transition-all duration-120"
               href={source}
               target="_blank"
               rel="noopener noreferrer"
@@ -27,7 +27,7 @@ export function Slide({ children, source, sourceText, className }: Props) {
               {sourceText || source}
             </a>
           ) : (
-            <span className="text-[1.5vh] font-foreground opacity-[.4] uppercase">
+            <span className="text-[1.8vh] font-foreground opacity-[.4] uppercase">
               {sourceText}
             </span>
           )}
