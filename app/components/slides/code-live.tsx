@@ -223,11 +223,20 @@ const codeSnapshots = [
   ],
 ];
 
-export function CodeLiveSlide() {
+type Props = {
+  step: number;
+};
+
+export function CodeLiveSlide({ step }: Props) {
   const [file, setFile] = useState('index.html');
 
   const [indexCode, setIndexCode] = useState(codeSnapshots[0][0]);
   const [signalCode, setSignalCode] = useState(codeSnapshots[0][1]);
+
+  useEffect(() => {
+    setIndexCode(codeSnapshots[step][0]);
+    setSignalCode(codeSnapshots[step][1]);
+  }, [step]);
 
   const code = file === 'index.html' ? indexCode : signalCode;
   const setCode = file === 'index.html' ? setIndexCode : setSignalCode;

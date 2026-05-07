@@ -29,6 +29,7 @@ type Props = {
   highlightLines?: number[];
   fontSize?: number;
   lineNumbers?: boolean;
+  onFocus?: () => void;
 };
 
 export function CodeEditorAlt({
@@ -37,6 +38,7 @@ export function CodeEditorAlt({
   language = 'javascript',
   lineNumbers = false,
   fontSize = vh(2.25),
+  onFocus,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<null | EditorView>(null);
@@ -114,6 +116,7 @@ export function CodeEditorAlt({
             viewRef.current = view;
           }}
           onKeyDown={handleKeyDown}
+          onFocus={onFocus}
           basicSetup={{
             highlightActiveLine: !readOnly,
             lineNumbers,

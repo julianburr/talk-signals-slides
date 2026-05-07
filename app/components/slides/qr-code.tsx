@@ -6,7 +6,7 @@ import { match } from 'ts-pattern';
 import { Slide } from '~/components/slide';
 
 const socials = [
-  'https://www.linkedin.com/in/julianburr/',
+  'https://www.linkedin.com/in/julianburr',
   'https://bsky.app/profile/julianburr.de',
   'https://github.com/julianburr',
 ];
@@ -36,12 +36,12 @@ export function QrCodeSlide() {
         </div>
         <div className="flex flex-col flex-1">
           <div className="flex flex-col items-start gap-[.8vh]">
-            <span className="text-[3.2vh]">Link to the slides:</span>
+            <span className="text-[2.6vh] opacity-[.6]">Link to the slides:</span>
             <a
-              href="https://www.julianburr.de/react-summit-us-2025-slides.pdf"
+              href={slidesUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[5.2vh] leading-[1.1] font-heading font-bold hover:underline focus:underline"
+              className="text-[4.8vh] leading-[1.1] font-heading font-bold uppercase hover:underline focus:underline tracking-wide"
             >
               https://www.julianburr.de/
               <br />
@@ -49,14 +49,14 @@ export function QrCodeSlide() {
             </a>
           </div>
 
-          <div className="flex flex-col items-start gap-[1.2vh] mt-[4.8vh]">
+          <div className="flex flex-col items-start gap-[1.4vh] mt-[5.2vh]">
             {socials.map((url) => (
               <a
                 key={url}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex text-[3.2vh] hover:underline focus:underline"
+                className="flex text-[2.8vh] font-medium uppercase hover:underline focus:underline tracking-wide"
               >
                 {url}
               </a>

@@ -1,6 +1,16 @@
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts } from 'react-router';
+import { match } from 'ts-pattern';
 
 import type { Route } from './+types/root';
+
 import './app.css';
 
 export const links: Route.LinksFunction = () => [
@@ -9,6 +19,29 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const [saturation, _setSaturation] = useState(100);
+  const [showSaturation, setShowSaturation] = useState(false);
+
+  const saturationTimer = useRef<NodeJS.Timeout | null>(null);
+  const setSaturation = useCallback((value: Parameters<Dispatch<SetStateAction<number>>>[0]) => {
+    clearTimeout(saturationTimer.current!);
+    _setSaturation(value);
+    setShowSaturation(true);
+    saturationTimer.current = setTimeout(() => setShowSaturation(false), 1_000);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      match([e.ctrlKey, e.key])
+        .with([true, ','], () => setSaturation((state) => Math.min(140, state + 5)))
+        .with([true, '.'], () => setSaturation((state) => Math.max(40, state - 5)))
+        .otherwise(() => null);
+    };
+
+    window.document.addEventListener('keydown', handleKeyDown);
+    return () => window.document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <html lang="en">
       <head>
@@ -17,9 +50,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="hide-cursor">
+      <body className="hide-cursor" style={{ filter: `saturate(${saturation}%)` }}>
         {children}
 
+        <pre
+          data-visible={showSaturation}
+          className="fixed z-1000 top-[2vh] left-[2vh] font-mono text-[1.6vh] opacity-0 transition-all duration-120 data-[visible=true]:opacity-50"
+        >
+          {saturation}
+        </pre>
         <div className="hide-cursor-overlay" />
         <Scripts />
       </body>

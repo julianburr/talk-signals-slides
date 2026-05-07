@@ -28,7 +28,7 @@ export const slides: Slide[] = [
   { steps: 1, component: () => <ImgSlide id="tweet-andrew" /> },
   { steps: 1, component: () => <ImgSlide id="youtube-react-fir" /> },
   { steps: 1, component: () => <TitleSlide title="How does it work?" /> },
-  { steps: 1, component: () => <CodeLiveSlide /> },
+  { steps: 2, component: (step) => <CodeLiveSlide step={step} /> },
   { steps: 1, component: () => <TitleSlide title="There are still challenges" /> },
   { steps: 11, component: (step) => <CodeChallengesSlide step={step} /> },
   { steps: 1, component: () => <TitleSlide title="The TC39 proposal" /> },
